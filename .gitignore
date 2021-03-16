@@ -4,5 +4,5 @@
 *.zip
 *.txt
 *.cfg
-*/.idea/
 *.tmp
+**/.idea/
