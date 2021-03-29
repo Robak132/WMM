@@ -25,7 +25,7 @@ def amp_power(x):
     return sum(amp_spectrum(x)**2)
 
 
-def data_power(x):
+def data_power(x, N):
     return sum(np.abs(x)**2) / N
 
 
@@ -43,23 +43,25 @@ def fourier_convolution(s1, s2):
     return np.abs(np.fft.ifft(np.fft.fft(s1) * np.fft.fft(s2)))
 
 
-def parsevals_theorem(x):
+def parsevals_theorem(x, N):
     print(f"Tw. Parsevala dla {x}:")
-    print(f"Z danych : {data_power(x)}")
+    print(f"Z danych : {data_power(x, N)}")
     print(f"Z FFT: {amp_power(x)}")
-    print(f"Poprawność: {data_power(x) == amp_power(x)}\n")
+    print(f"Poprawność: {data_power(x, N) == amp_power(x)}\n")
 
 
-def generate_double_plot(x, n=None, xlabel=None, ylabel=None, title=None):
+def generate_double_plot(x, n=None, xlabel=None, ylabel=None, xscale=None, yscale=None, title=None):
     fig, axs = plt.subplots(2)
     axs[0].stem(amp_spectrum(x, n), use_line_collection=True)
-    axs[0].set_ylabel("Widmo amplitudowe", fontsize=10)
     axs[1].stem(phase_spectrum(x, n), use_line_collection=True)
 
+    if xscale:
+        axs[1].set_xticks(xscale)
+    if yscale:
+        axs[1].set_yticks(yscale)
     if xlabel:
         axs[0].set_xlabel(xlabel[0], fontsize=10)
         axs[1].set_xlabel(xlabel[1], fontsize=10)
-
     if ylabel:
         axs[0].set_ylabel(ylabel[0], fontsize=10)
         axs[1].set_ylabel(ylabel[1], fontsize=10)
@@ -89,14 +91,15 @@ def s_4(A, f, x):
 
 
 #%% Zad 1 %%#
+N = 4
 s1 = np.array([2, 3, 1, 0])
 s2 = np.array([0, 3, 1, 0])
 
 generate_double_plot(s1, ylabel=["Widmo amplitudowe", "Widmo fazowe"], xlabel=["n", "n"], title=f"Widma dla s={s1}")
 generate_double_plot(s2, ylabel=["Widmo amplitudowe", "Widmo fazowe"], xlabel=["n", "n"], title=f"Widma dla s={s2}")
 
-parsevals_theorem(s1)
-parsevals_theorem(s2)
+parsevals_theorem(s1, N)
+parsevals_theorem(s2, N)
 
 print(f"Splot policzony \"ręcznie\": {convolution(s1, s2)}")
 print(f"Splot policzony Fourierem: {fourier_convolution(s1, s2)}")
@@ -107,7 +110,7 @@ N = 88
 
 for n0 in [0, N/4, N/2, 3*N/4]:
     x = [s_2(A, N, n-n0) for n in range(N)]
-    generate_double_plot(x, ylabel=["Widmo amplitudowe", "Widmo fazowe"], xlabel=["n", "n"], title=f"Przesunięcie o {n0}")
+    generate_double_plot(x, ylabel=["Widmo amplitudowe", "Widmo fazowe"], xlabel=["n", "n"], yscale=[-np.pi, -np.pi / 2, 0, np.pi / 2, np.pi], title=f"Przesunięcie o {n0}")
 
 #%% Zad 3 %%#
 A = 4
