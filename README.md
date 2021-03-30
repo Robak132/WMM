@@ -1,4 +1,4 @@
-# WSS
+# WMM
 Wstęp do multimediów
 
 ## L1
