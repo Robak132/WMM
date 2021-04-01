@@ -1,7 +1,6 @@
 #%% Imports
 
 import os
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,9 +34,9 @@ def printi(img, img_title="image"):
 
 
 #%% Resources
-IMAGE = cv2.imread("parrots_col.png", cv2.IMREAD_UNCHANGED)
-IMAGE_NOISE = cv2.imread("parrots_col_noise.png", cv2.IMREAD_UNCHANGED)
-IMAGE_INOISE = cv2.imread("parrots_col_inoise.png", cv2.IMREAD_UNCHANGED)
+IMAGE = cv2.imread("L2/parrots_col.png", cv2.IMREAD_UNCHANGED)
+IMAGE_NOISE = cv2.imread("L2/parrots_col_noise.png", cv2.IMREAD_UNCHANGED)
+IMAGE_INOISE = cv2.imread("L2/parrots_col_inoise.png", cv2.IMREAD_UNCHANGED)
 
 NOISE = [IMAGE_NOISE, IMAGE_INOISE]
 save_dir = "/out/"
@@ -48,12 +47,12 @@ for j in range(len(NOISE)):
     print(f"{NOISE_DESC[j]}: Filtr Gaussa")
     for i in [3, 5, 7]:
         gblur_img = cv2.GaussianBlur(NOISE[j], (i, i), 0)
-        cv_imwrite("out/Z1", f"szum{j}_gauss{i}x{i}.png", gblur_img)
+        cv_imwrite("L2/out/Z1", f"szum{j}_gauss{i}x{i}.png", gblur_img)
         print(f"Maska {i}x{i}: PSNR = {calcPSNR(IMAGE, gblur_img)}")
     print(f"\n{NOISE_DESC[j]}: Filtr Medianowy")
     for i in [3, 5, 7]:
         median_img = cv2.medianBlur(NOISE[j], i)
-        cv_imwrite("out/Z1", f"szum{j}_median{i}x{i}.png", median_img)
+        cv_imwrite("L2/out/Z1", f"szum{j}_median{i}x{i}.png", median_img)
         print(f"Maska {i}x{i}: PSNR = {calcPSNR(IMAGE, median_img)}")
     print()
 
@@ -62,19 +61,31 @@ IMAGE_CONVERTED = cv2.cvtColor(IMAGE, cv2.COLOR_BGR2YCrCb)
 
 NEW_IMAGE = np.zeros(IMAGE_CONVERTED.shape, dtype=IMAGE_CONVERTED.dtype)
 
+plt.hist(IMAGE_CONVERTED[:, :, 0].flatten(), 256)
+plt.title("Histogram przed wyrównaniem jasności")
+plt.show()
+
 NEW_IMAGE[:, :, 0] = cv2.equalizeHist(IMAGE_CONVERTED[:, :, 0])
+
+plt.hist(NEW_IMAGE[:, :, 0].flatten(), 256)
+plt.title("Histogram po wyrównaniu jasności")
+plt.show()
+
 NEW_IMAGE[:, :, 1] = IMAGE_CONVERTED[:, :, 1]
 NEW_IMAGE[:, :, 2] = IMAGE_CONVERTED[:, :, 2]
 NEW_IMAGE = cv2.cvtColor(NEW_IMAGE, cv2.COLOR_YCrCb2BGR)
 
 cv_imshow(IMAGE, "Obraz bazowy")
-cv_imwrite(f"out/Z2", f"Bazowy.png", IMAGE)
+cv_imwrite("L2/out/Z2", f"Bazowy.png", IMAGE)
 cv_imshow(NEW_IMAGE, "Histogram")
-cv_imwrite("out/Z2", "PoNormalizacji.png", NEW_IMAGE)
+cv_imwrite("L2/out/Z2", "PoNormalizacji.png", NEW_IMAGE)
+cv2.waitKey(0)
 
 #%% Zad 3
-
-"""Hic sunt dracones"""
-
-#%% Stop
+W = -2
+IMAGE_LAP = cv2.addWeighted(IMAGE, 1, cv2.Laplacian(IMAGE, cv2.CV_8U), W, 0)
+cv_imshow(IMAGE, "Obraz Bazowy")
+cv_imwrite("L2/out/Z3", "Bazowy.png", IMAGE)
+cv_imshow(IMAGE_LAP, "Obraz wyostrzony")
+cv_imwrite("L2/out/Z3", "ObrazWyostrzony.png", IMAGE_LAP)
 cv2.waitKey(0)

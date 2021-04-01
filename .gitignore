@@ -2,4 +2,5 @@
 *.zip
 **/.idea/
 **/Resources/
-**/out/
+!**/Resources/**.py
+!**/Resources/**.pdf
