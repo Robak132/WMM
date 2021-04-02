@@ -6,8 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #%% Functions
-
-
 def cv_imshow(img, img_title="image"):
     if (img.dtype == np.float32) or (img.dtype == np.float64):
         img_ = img / 255
@@ -63,18 +61,23 @@ IMAGE_CONVERTED = cv2.cvtColor(IMAGE, cv2.COLOR_BGR2YCrCb)
 
 NEW_IMAGE = np.zeros(IMAGE_CONVERTED.shape, dtype=IMAGE_CONVERTED.dtype)
 
-plt.hist(IMAGE_CONVERTED[:, :, 0].flatten(), 256)
-plt.title("Histogram przed wyrównaniem jasności")
-plt.show()
+for i in range(3):
+    plt.hist(IMAGE_CONVERTED[:, :, i].flatten(), 256)
+    plt.title(f"Histogram {i}-tej składowej")
+    plt.savefig(SAVE_DIR + f"Z2/hist_{i}.png")
+    plt.show()
 
 NEW_IMAGE[:, :, 0] = cv2.equalizeHist(IMAGE_CONVERTED[:, :, 0])
-
-plt.hist(NEW_IMAGE[:, :, 0].flatten(), 256)
-plt.title("Histogram po wyrównaniu jasności")
-plt.show()
-
 NEW_IMAGE[:, :, 1] = IMAGE_CONVERTED[:, :, 1]
 NEW_IMAGE[:, :, 2] = IMAGE_CONVERTED[:, :, 2]
+
+for i in range(3):
+    plt.hist(NEW_IMAGE[:, :, i].flatten(), 256)
+    plt.title(f"Histogram {i}-tej składowej po wyrównaniu")
+    plt.savefig(SAVE_DIR + f"Z2/conv_hist_{i}.png")
+    plt.show()
+
+
 NEW_IMAGE = cv2.cvtColor(NEW_IMAGE, cv2.COLOR_YCrCb2BGR)
 
 cv_imshow(IMAGE, "Obraz bazowy")
@@ -84,10 +87,10 @@ cv_imwrite(SAVE_DIR + "Z2", "PoNormalizacji.png", NEW_IMAGE)
 cv2.waitKey(0)
 
 #%% Zad 3
-W = -2
+W = -1.5
 IMAGE_LAP = cv2.addWeighted(IMAGE, 1, cv2.Laplacian(IMAGE, cv2.CV_8U), W, 0)
 cv_imshow(IMAGE, "Obraz Bazowy")
 cv_imwrite(SAVE_DIR + "Z3", "Bazowy.png", IMAGE)
 cv_imshow(IMAGE_LAP, "Obraz wyostrzony")
-cv_imwrite(SAVE_DIR + "Z3", "ObrazWyostrzony.png", IMAGE_LAP)
+cv_imwrite(SAVE_DIR + "Z3", f"ObrazWyostrzony{W}.png", IMAGE_LAP)
 cv2.waitKey(0)
