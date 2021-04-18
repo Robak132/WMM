@@ -137,9 +137,9 @@ cv_imshow(cv2.multiply(lh, 2), "LH2")
 cv_imshow(cv2.multiply(hl, 2), "HL2")
 cv_imshow(cv2.multiply(hh, 2), "HH2")
 cv_imwrite("out/Z4", "LL.png", ll)
-cv_imwrite("out/Z4", "LH.png", lh)
-cv_imwrite("out/Z4", "HL.png", hl)
-cv_imwrite("out/Z4", "HH.png", hh)
+cv_imwrite("out/Z4", "LH.png", cv2.multiply(lh, 2))
+cv_imwrite("out/Z4", "HL.png", cv2.multiply(hl, 2))
+cv_imwrite("out/Z4", "HH.png", cv2.multiply(hh, 2))
 
 hist_ll = cv2.calcHist([ll], [0], None, [256], [0, 256]).flatten()
 hist_lh = cv2.calcHist([(lh + 255).astype(np.uint16)], [0], None, [511], [0, 511]).flatten()
@@ -190,10 +190,10 @@ hist_B = cv2.calcHist([image_B], [0], None, [256], [0, 256]).flatten()
 H_R = calc_entropy(hist_R)
 H_G = calc_entropy(hist_G)
 H_B = calc_entropy(hist_B)
-print(f"H(R) = {H_R:.4f}")
-print(f"H(G) = {H_G:.4f}")
-print(f"H(B) = {H_B:.4f}")
-print(f"H_śr = {(H_R + H_G + H_B) / 3:.4f}")
+print(f"Z5: H(R) = {H_R:.4f}")
+print(f"Z5: H(G) = {H_G:.4f}")
+print(f"Z5: H(B) = {H_B:.4f}")
+print(f"Z5: H_śr = {(H_R + H_G + H_B) / 3:.4f}\n")
 
 # %% Zad 6
 IMAGE_YUV = cv2.cvtColor(IMAGE_COLOR, cv2.COLOR_BGR2YUV)
@@ -205,10 +205,10 @@ hist_V = cv2.calcHist([IMAGE_YUV[:, :, 2]], [0], None, [256], [0, 256]).flatten(
 H_Y = calc_entropy(hist_Y)
 H_U = calc_entropy(hist_U)
 H_V = calc_entropy(hist_V)
-print(f"H(Y) = {H_Y:.4f}")
-print(f"H(U) = {H_U:.4f}")
-print(f"H(V) = {H_V:.4f}")
-print(f"H_śr = {(H_Y + H_U + H_V) / 3:.4f}")
+print(f"Z6: H(Y) = {H_Y:.4f}")
+print(f"Z6: H(U) = {H_U:.4f}")
+print(f"Z6: H(V) = {H_V:.4f}")
+print(f"Z6: H_śr = {(H_Y + H_U + H_V) / 3:.4f}\n")
 
 cv_imshow(IMAGE_YUV[:, :, 0], "Obraz Y")
 cv_imshow(IMAGE_YUV[:, :, 1], "Obraz U")
@@ -229,6 +229,7 @@ cv2.waitKey()
 xx = []  ### tablica na wartości osi X -> bitrate
 ym = []  ### tablica na wartości osi Y dla MSE
 yp = []  ### tablica na wartości osi Y dla PSNR
+images = {} ### słownik na obrazy
 quality_values = np.arange(10, 100, 5)
 
 for quality in quality_values:
@@ -240,6 +241,7 @@ for quality in quality_values:
     image_compressed = cv2.imread(pathname, cv2.IMREAD_UNCHANGED)
     bitrate = 8 * os.stat(pathname).st_size / (IMAGE_COLOR.shape[0] * IMAGE_COLOR.shape[1])
     mse, psnr = calc_mse_psnr(IMAGE_COLOR, image_compressed)
+    images[quality] = image_compressed
     xx.append(bitrate)
     ym.append(mse)
     yp.append(psnr)
@@ -261,5 +263,11 @@ plt.xlabel("bitrate")
 plt.ylabel("PSNR [dB]", labelpad=0)
 for a, b, c in zip(xx, yp, quality_values):
     plt.text(a-0.1, b+0.5, str(c))
+plt.savefig("out/Z7/hist.png")
 plt.show()
+
+bit_png = 8 * os.stat(IMAGE_COLOR_URL).st_size / (IMAGE_COLOR.shape[0] * IMAGE_COLOR.shape[1])
+bit_jpg = 8 * os.stat("out/Z7/image_q050.jpg").st_size / (images[50].shape[0] * images[50].shape[1])
+print(f"Z7: Przepływność PNG: {bit_png}")
+print(f"Z7: Przepływność JPG (jakość 50): {bit_jpg}")
 cv2.waitKey()
