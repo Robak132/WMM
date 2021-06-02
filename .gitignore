@@ -2,6 +2,8 @@
 *.docx
 *.zip
 **/.idea/
+**/venv/
+**/.idea/
 **/Resources/
 !**/Resources/**.py
 !**/Resources/**.pdf
