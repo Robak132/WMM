@@ -3,6 +3,7 @@ from pathlib import Path
 import moderngl
 from moderngl_window import WindowConfig
 from moderngl_window import geometry
+from pyglet.gl import glPixelStorei, glReadPixels, GL_PACK_ALIGNMENT
 
 import config
 from shaders.shader_utils import get_shaders
