@@ -5,13 +5,17 @@ from base_window import BaseWindowConfig
 
 
 class PhongWindow(BaseWindowConfig):
+    VIEW_POSITION = (3.0, 1.0, -5.0)
+    LIGHT_COLOR = (1.0, 1.0, 1.0)
+    OBJECT_COLOR = (0.34, .354, .6)
+    LIGHT_POSITION = (2.0, 1.0, 1.0)
+    SHININESS = 8
 
     def __init__(self, **kwargs):
         super(PhongWindow, self).__init__(**kwargs)
 
     def init_shaders_variables(self):
         self.mvp = self.program['mvp']
-        self.look = self.program['look']
 
     def render(self, time: float, frame_time: float):
         self.ctx.clear(1.0, 1.0, 1.0, 0.0)
