@@ -16,7 +16,6 @@ class MandelbrotWindowConfig(BaseWindowConfig):
                             dtype='float32')
 
         self.vao = self.ctx.simple_vertex_array(self.program, self.ctx.buffer(vertices.data), 'in_position')
-
         self.center = self.program['center']
         self.scale = self.program['scale']
         self.iter = self.program['iterations']
@@ -26,7 +25,7 @@ class MandelbrotWindowConfig(BaseWindowConfig):
         self.ctx.clear(1.0, 1.0, 1.0, 0.0)
 
         self.center.value = (0.0, 0.0)
-        self.iter.value = 5
+        self.iter.value = 100
         self.scale.value = 1.0
         self.ratio.value = self.aspect_ratio
 

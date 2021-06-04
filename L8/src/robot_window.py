@@ -31,20 +31,20 @@ class RobotWindow(BaseWindowConfig):
             (0.0, 0.0, 1.0),
         )
 
-        # Head
+        # Głowa
         self.color.value = (0.996, 0.125, 0.125)
         move = Matrix44.from_translation((0.0, 0.0, 5.0))
-        self.mvp.write((projection * lookat * move).astype('float32'))
-        self.sphere.render()
+        self.mvp.write((projection * lookat * move).astype('float32'))  # Zapis końcowej macierzy przekształceń do zmiennej mvp
+        self.sphere.render()  # Renderowanie kuli
 
-        # Body
+        # Korpus
         self.color.value = (0.251, 0.478, 0.916)
         move = Matrix44.from_translation((0.0, 0.0, 2.0))
         scale = Matrix44.from_scale((1.0, 1.0, 2.0))
         self.mvp.write((projection * lookat * move * scale).astype('float32'))
-        self.cube.render()
+        self.cube.render()  # Renderowanie kostki
 
-        # Right Arm
+        # Prawe ramię
         self.color.value = (1.0, 1.0, 0.0)
         move = Matrix44.from_translation(Vector3([0.0, 3.0, 3.0]))
         rotate = Matrix44.from_x_rotation(-0.25 * np.pi)
@@ -52,7 +52,7 @@ class RobotWindow(BaseWindowConfig):
         self.mvp.write((projection * lookat * move * rotate * scale).astype('float32'))
         self.cube.render()
 
-        # Left Arm
+        # Lewe ramię
         self.color.value = (1.0, 1.0, 0.0)
         move = Matrix44.from_translation((0.0, -3.0, 3.0))
         rotate = Matrix44.from_x_rotation(0.25 * np.pi)
@@ -60,7 +60,7 @@ class RobotWindow(BaseWindowConfig):
         self.mvp.write((projection * lookat * move * rotate * scale).astype('float32'))
         self.cube.render()
 
-        # Left Leg
+        # Lewa noga
         self.color.value = (0.58, 0.0, 0.827)
         move = Matrix44.from_translation((0.0, 2.0, -1.5))
         rotate = Matrix44.from_x_rotation(np.pi / -6)
@@ -68,7 +68,7 @@ class RobotWindow(BaseWindowConfig):
         self.mvp.write((projection * lookat * move * rotate * scale).astype('float32'))
         self.cube.render()
 
-        # Right Leg
+        # Prawa noga
         self.color.value = (0.58, 0.0, 0.827)
         move = Matrix44.from_translation((0.0, -2.0, -1.5))
         rotate = Matrix44.from_x_rotation(np.pi / 6)
