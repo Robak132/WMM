@@ -10,8 +10,8 @@ class PhongWindow(BaseWindowConfig):
         super(PhongWindow, self).__init__(**kwargs)
 
     def init_shaders_variables(self):
-        pass
-        # TODO: Init shader variables
+        self.mvp = self.program['mvp']
+        self.look = self.program['look']
 
     def render(self, time: float, frame_time: float):
         self.ctx.clear(1.0, 1.0, 1.0, 0.0)
@@ -23,5 +23,5 @@ class PhongWindow(BaseWindowConfig):
             (0.0, 0.0, 1.0),
             (0.0, 0.0, 1.0),
         )
-        # TODO: Write variables to shader
+        self.mvp.write((proj * lookat).astype('float32'))
         self.vao.render()
